@@ -1,12 +1,15 @@
 ## Solution code for *Summer Challenge on Writer Verification (NCVPRIPG'23)*
 
+---
 #### Create Enviroment
 
 Create a conda or python virtual environment (python version : 3.9) and install the packages mentioned in **_requirements.txt_** file
 
+---
+
 #### Training
 
-Activate the create enviroment and run the below commands to start training the model.
+Activate the created enviroment and run the below commands to start training the model.
 Refer *_modelling/model.py_* file to know more about the model used.
 > python train.py --epochs 10 --experiment_folder_path exp0 --learning_rate 0.02 --save_after 10 --batch_size 8 --train_dataset_folder training_folder_path --val_dataset_folder validation_folder_path
 
