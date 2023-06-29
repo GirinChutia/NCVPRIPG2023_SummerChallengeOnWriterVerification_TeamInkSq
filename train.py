@@ -188,7 +188,7 @@ if __name__ == "__main__":
         help="Model backbone",
     )
     parser.add_argument(
-        "--batch_size", type=str, default=64, required=True, help="batch_size",
+        "--batch_size", type=int, default=64, required=True, help="batch_size",
     )
     parser.add_argument(
         "--train_dataset_folder",
