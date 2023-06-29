@@ -24,11 +24,12 @@ Args :
 ---
 #### Evaluation & Generation of submission csv file
 
-> python perform_evaluation.py --test_csv test_csv_path --test_dir test_folder_path --model_path model_weights_path --submission_csv csv_path
+> python perform_evaluation.py --set_name test --csv_path test_csv_path --img_dir test_folder_path --model_path model_weights_path --submission_csv csv_path 
 
 Args :
-* **--test_csv** : Path of val.csv or test.csv csv file (Provided in the competition)
-* **--test_dir** : Path of the val or the test folder (Provided in the competition)
+* **--set_name** : Set name : test or val. The submission csv will have the format as per this. This is because the format (columns) of submission csv for val and test are different
+* **--csv_path** : Path of val.csv or test.csv csv file (Provided in the competition)
+* **--img_dir** : Path of the val or the test folder (Provided in the competition)
 * **--model_path** : Path of the model to be used for inference
 * **--submission_csv** : Path of the csv file to which the results will be saved. (The CSV file will be create automatically in this provided path)
 
