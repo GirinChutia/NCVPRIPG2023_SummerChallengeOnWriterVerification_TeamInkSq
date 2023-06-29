@@ -33,6 +33,10 @@ Args :
 * **--model_path** : Path of the model to be used for inference
 * **--submission_csv** : Path of the csv file to which the results will be saved. (The CSV file will be create automatically in this provided path)
 
+---
+#### Model Checkpoint path 
+Name : best.pt
+https://drive.google.com/drive/folders/1AoX6QkM5yL-thITtVVbjvULT9qv5b9jP?usp=sharing
 
 ---
 
