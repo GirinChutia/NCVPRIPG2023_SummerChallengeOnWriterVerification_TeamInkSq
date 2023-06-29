@@ -36,7 +36,7 @@ Args :
 ---
 #### Model Checkpoint path 
 Name : best.pt
-https://drive.google.com/drive/folders/1AoX6QkM5yL-thITtVVbjvULT9qv5b9jP?usp=sharing
+Path : https://drive.google.com/drive/folders/1AoX6QkM5yL-thITtVVbjvULT9qv5b9jP?usp=sharing
 
 ---
 

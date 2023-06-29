@@ -8,7 +8,7 @@ from tqdm import tqdm
 import argparse
 
 
-def perform_evaluation(val_csv_path, val_dir, model_path):
+def perform_evaluation(csv_path, img_dir, model_path, set_name='val'):
 
     feed_shape = [3, 200, 2600]
     transform = transforms.Compose(
@@ -30,19 +30,24 @@ def perform_evaluation(val_csv_path, val_dir, model_path):
     model.to(device)
     model = model.eval()
 
-    val_df = pd.read_csv(val_csv_path)
+    val_df = pd.read_csv(csv_path)
 
     IMG1_NAME, IMG2_NAME, LABELS, _preds = [], [], [], []
+    IMG1_IMG2_NAME = []
 
     for _, row in tqdm(val_df.iterrows(), total=len(val_df)):
-
-        IMG1_NAME.append(row["img1_name"])
-        IMG2_NAME.append(row["img2_name"])
-        LABELS.append(row["label"])
-
-        img1_path = os.path.join(val_dir, row["img1_name"])
-        img2_path = os.path.join(val_dir, row["img2_name"])
-
+        
+        img1_path = os.path.join(img_dir, row["img1_name"])
+        img2_path = os.path.join(img_dir, row["img2_name"])
+        
+        if set_name == 'val':
+            IMG1_NAME.append(row["img1_name"])
+            IMG2_NAME.append(row["img2_name"])
+            LABELS.append(row["label"])
+            
+        if set_name == 'test':
+            IMG1_IMG2_NAME.append(os.path.basename(row["img1_name"]) + '_' + os.path.basename(row["img2_name"]))
+            
         p = infer_images(
             model, img1_path, img2_path, transform=transform, device=device
         )
@@ -51,31 +56,41 @@ def perform_evaluation(val_csv_path, val_dir, model_path):
         p = round(p, 5)
         _preds.append(p)
 
-    pred_df = pd.DataFrame.from_dict(
-        {
-            "img1_name": IMG1_NAME,
-            "img2_name": IMG2_NAME,
-            "label": LABELS,
-            "pred": _preds,
-        }
-    )
+    if set_name == 'val':
+        pred_df = pd.DataFrame.from_dict(
+            {
+                "img1_name": IMG1_NAME,
+                "img2_name": IMG2_NAME,
+                "label": LABELS,
+                "pred": _preds,
+            }
+        )
+        
+        _preds_thresh = []
+        for i in _preds:
+            if i > 0.5:
+                _preds_thresh.append(1)
+            else:
+                _preds_thresh.append(0)
 
-    _preds_thresh = []
-    for i in _preds:
-        if i > 0.5:
-            _preds_thresh.append(1)
-        else:
-            _preds_thresh.append(0)
-
-    submission_df = pd.DataFrame.from_dict(
-        {
-            "img1_name": IMG1_NAME,
-            "img2_name": IMG2_NAME,
-            "label": _preds_thresh,
-            "proba": _preds,
-        }
-    )
-
+        submission_df = pd.DataFrame.from_dict(
+            {
+                "img1_name": IMG1_NAME,
+                "img2_name": IMG2_NAME,
+                "label": _preds_thresh,
+                "proba": _preds,
+            }
+        )
+    
+    if set_name == 'test':
+        pred_df = pd.DataFrame.from_dict(
+            {
+                "id": IMG1_IMG2_NAME,
+                "proba": _preds,
+            }
+        )
+        submission_df = pred_df
+        
     return pred_df, submission_df
 
 
@@ -98,10 +113,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--test_csv", type=str, required=True, help="path to the test csv file"
+        "--csv_path", type=str, required=True, help="path to the test csv file"
     )
     parser.add_argument(
-        "--test_dir", type=str, required=True, help="path to the test image folder"
+        "--img_dir", type=str, required=True, help="path to the test image folder"
     )
     parser.add_argument(
         "--model_path", type=str, required=True, help="path to the saved model (.pth)"
@@ -112,19 +127,18 @@ if __name__ == "__main__":
         required=True,
         help="path of the submission csv where the output submission will be saved",
     )
+    parser.add_argument(
+        "--set_name",
+        type=str,
+        required=True,
+        help="Set for evaluation : val or test ",
+    )
     args = parser.parse_args()
-
-    args.test_csv = (r"D:\Work\Conferences\NCVPRIPG-2023\Similarity\code\val.csv",)
-    args.test_dir = (
-        r"D:\Work\Conferences\NCVPRIPG-2023\Similarity\dataset\dataset\val",
-    )
-    args.model_path = (
-        r"D:\Work\Conferences\NCVPRIPG-2023\Similarity\code\SN2_results\SiameseNetwork_2_Run2\best.pth",
-    )
-
-    pred_df, submission_df = perform_evaluation(
-        val_csv_path=args.test_csv, val_dir=args.test_dir, model_path=args.model_path
-    )
+    
+    pred_df, submission_df = perform_evaluation(csv_path=args.csv_path,
+                                                img_dir=args.img_dir,
+                                                set_name=args.set_name,
+                                                model_path=args.model_path)
     # 'InkSq_02_model2.csv'
     submission_df.to_csv(args.submission_csv, index=False)
     print(f"Submission CSV is saved at : {args.submission_csv}")
