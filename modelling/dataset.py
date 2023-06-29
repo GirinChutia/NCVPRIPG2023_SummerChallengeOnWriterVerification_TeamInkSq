@@ -26,7 +26,7 @@ class Dataset(torch.utils.data.IterableDataset):
         """
         self.path = path
 
-        self.feed_shape = [3, 224, 224]
+        self.feed_shape = (3, 200,2600)
         self.shuffle_pairs = shuffle_pairs
 
         self.augment = augment
