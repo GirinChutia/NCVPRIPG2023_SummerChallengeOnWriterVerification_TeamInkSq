@@ -20,7 +20,7 @@ Args :
 * **--batch_size** : Batch size to be used for training
 * **--save_after** : Weight saving frequency.
 * **--train_dataset_folder** : Training folder path(The folder should follow the structure as shown in "Train and Validation folder structure" section)
-* **--val_dataset_folder** Validation folder path (The folder should follow the structure as shown in "Train and Validation folder structure" section)
+* **--val_dataset_folder** Validation folder path (The folder should follow the structure as shown in "Train and Validation folder structure" section) _- This folder is splitted from the training dataset provided, not to be confused with the val folder provided in the competition._
 ---
 #### Evaluation & Generation of submission csv file
 
@@ -28,9 +28,9 @@ Args :
 
 Args :
 * **--test_csv** : Path of val.csv or test.csv csv file (Provided in the competition)
-* **--test_dir** : Path of the val or the test folder
+* **--test_dir** : Path of the val or the test folder (Provided in the competition)
 * **--model_path** : Path of the model to be used for inference
-* **--submission_csv** : Path of the csv file to which the results will be saved.
+* **--submission_csv** : Path of the csv file to which the results will be saved. (The CSV file will be create automatically in this provided path)
 
 
 ---
